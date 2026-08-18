@@ -1,5 +1,4 @@
 import { supabase, supabaseError } from './supabase';
-import { MOCK_USERS, MOCK_ORDERS, MOCK_PRODUCTS, MOCK_GROUP_BUYS, MOCK_REVIEWS } from '../constants';
 
 // Helper: extract data from Supabase response
 const extract = (res) => {
@@ -10,13 +9,6 @@ const extract = (res) => {
   return res.data;
 };
 
-const checkConfig = () => {
-  if (supabaseError) {
-    console.warn("Supabase is not configured. Falling back to empty or mock responses.");
-    return false;
-  }
-  return true;
-};
 
 // Map snake_case to camelCase for users
 const mapUserToCamelCase = (u) => {
@@ -212,22 +204,19 @@ const mapSupportTicketToSnakeCase = (t) => {
 export const dbService = {
   // ─── PRODUCTS ──────────────────────────────────────────
   getUsers: async () => {
-    if (!checkConfig()) return MOCK_USERS;
-    const res = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
     const data = extract(res);
-    return data && data.length > 0 ? data.map(mapUserToCamelCase) : MOCK_USERS;
+    return data && data.length > 0 ? data.map() : [];
   },
 
   getDeliveryPartners: async () => {
-    if (!checkConfig()) return MOCK_USERS.filter(u => u.role === 'delivery');
-    const res = await supabase.from('profiles').select('*').eq('role', 'delivery');
+        const res = await supabase.from('profiles').select('*').eq('role', 'delivery');
     const data = extract(res);
-    return data && data.length > 0 ? data.map(mapUserToCamelCase) : MOCK_USERS.filter(u => u.role === 'delivery');
+    return data && data.length > 0 ? data.map() : [];
   },
 
   addDeliveryPartner: async (partnerData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('admin_create_delivery_partner', { 
+        const res = await supabase.rpc('admin_create_delivery_partner', { 
       p_name: partnerData.name, 
       p_email: partnerData.email, 
       p_phone: partnerData.phone 
@@ -237,8 +226,7 @@ export const dbService = {
   },
 
   updateDeliveryPartner: async (partnerId, partnerData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('admin_update_delivery_partner', { 
+        const res = await supabase.rpc('admin_update_delivery_partner', { 
       p_partner_id: partnerId,
       p_name: partnerData.name, 
       p_email: partnerData.email, 
@@ -249,40 +237,35 @@ export const dbService = {
   },
 
   deleteDeliveryPartner: async (partnerId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('admin_delete_delivery_partner', { p_partner_id: partnerId });
+        const res = await supabase.rpc('admin_delete_delivery_partner', { p_partner_id: partnerId });
     if (res.error) throw res.error;
     return true;
   },
 
   updateDeliveryPartnerStatus: async (uid, status) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    // status could be 'online' or 'offline', we can store this in the profiles 'status' column or just return true for now
+        // status could be 'online' or 'offline', we can store this in the profiles 'status' column or just return true for now
     const res = await supabase.from('profiles').update({ status: status }).eq('id', uid);
     if (res.error) throw res.error;
     return true;
   },
 
   assignDeliveryPartner: async (orderId, partnerId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('assign_delivery_partner', { target_order_id: orderId, partner_id: partnerId });
+        const res = await supabase.rpc('assign_delivery_partner', { target_order_id: orderId, partner_id: partnerId });
     if (res.error) throw res.error;
     return true;
   },
 
   getProducts: async () => {
-    if (!checkConfig()) return MOCK_PRODUCTS;
-    const res = await supabase.from('products').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('products').select('*').order('created_at', { ascending: false });
     const data = extract(res);
-    return data && data.length > 0 ? data.map(mapProductToCamelCase) : MOCK_PRODUCTS;
+    return data && data.length > 0 ? data.map() : [];
   },
 
   getProduct: async (id) => {
-    if (!checkConfig()) return MOCK_PRODUCTS.find(p => p.id === id) || null;
-    
+        
     // Intercept mock product IDs (they are not valid UUIDs)
     if (!id.includes('-')) {
-      return MOCK_PRODUCTS.find(p => p.id === id) || null;
+      return null;
     }
     
     const res = await supabase.from('products').select('*').eq('id', id).single();
@@ -291,15 +274,13 @@ export const dbService = {
   },
 
   addProduct: async (productData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const payload = mapProductToSnakeCase(productData);
+        const payload = mapProductToSnakeCase(productData);
     const res = await supabase.from('products').insert([payload]).select().single();
     return mapProductToCamelCase(extract(res));
   },
 
   uploadProductImage: async (file, userId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const fileExt = file.name.split('.').pop();
+        const fileExt = file.name.split('.').pop();
     const fileName = `${userId}-${Date.now()}.${fileExt}`;
     const filePath = `${fileName}`;
 
@@ -317,8 +298,7 @@ export const dbService = {
   },
 
   updateProduct: async (id, productData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    
+        
     // Do not update mock products in Supabase
     if (!id.includes('-')) return { ...productData, id };
 
@@ -328,35 +308,30 @@ export const dbService = {
   },
 
   deleteProduct: async (id) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    await supabase.from('products').delete().eq('id', id);
+        await supabase.from('products').delete().eq('id', id);
     return id;
   },
 
   updateProductStatus: async (id, status) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_product_status', { target_product_id: id, new_status: status });
+        const res = await supabase.rpc('update_product_status', { target_product_id: id, new_status: status });
     if (res.error) throw res.error;
     return true;
   },
 
   toggleProductFeatured: async (id, isFeatured) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('toggle_product_featured', { target_product_id: id, featured_status: isFeatured });
+        const res = await supabase.rpc('toggle_product_featured', { target_product_id: id, featured_status: isFeatured });
     if (res.error) throw res.error;
     return true;
   },
 
   deleteProductAdmin: async (id) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('delete_product_by_admin', { target_product_id: id });
+        const res = await supabase.rpc('delete_product_by_admin', { target_product_id: id });
     if (res.error) throw res.error;
     return id;
   },
 
   updateProductFullAdmin: async (id, data) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    if (!id.includes('-')) return true; // mock bypass
+        if (!id.includes('-')) return true; // mock bypass
     const res = await supabase.rpc('update_product_full_admin', {
       target_product_id: id,
       p_title: data.title,
@@ -372,16 +347,14 @@ export const dbService = {
 
   // ─── GROUP BUYS ────────────────────────────────────────
   getGroupBuys: async () => {
-    if (!checkConfig()) return MOCK_GROUP_BUYS;
-    // Assuming group_buys table exists
+        // Assuming group_buys table exists
     const res = await supabase.from('group_buys').select('*').order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(mapGroupBuyToCamelCase);
   },
 
   createGroupBuy: async (campaignData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const payload = mapGroupBuyToSnakeCase(campaignData);
+        const payload = mapGroupBuyToSnakeCase(campaignData);
     const res = await supabase.from('group_buys').insert([payload]).select().single();
     return mapGroupBuyToCamelCase(extract(res));
   },
@@ -393,8 +366,7 @@ export const dbService = {
 
   // ─── ORDERS ────────────────────────────────────────────
   getOrders: async (userId, role) => {
-    if (!checkConfig()) return [];
-    let query = supabase.from('orders').select('*').order('created_at', { ascending: false });
+        let query = supabase.from('orders').select('*').order('created_at', { ascending: false });
     
     if (role === 'farmer') {
       query = query.eq('farmer_id', userId);
@@ -410,8 +382,7 @@ export const dbService = {
   },
 
   createOrder: async (orderData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    
+        
     // Fix for mock data products being purchased
     if (orderData.farmerId === 'farm123') {
       orderData.farmerId = orderData.customerId; // Bypasses UUID crash for mock data
@@ -464,15 +435,13 @@ export const dbService = {
   },
 
   farmerAcceptOrder: async (orderId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('farmer_update_order_status', { target_order_id: orderId, new_delivery_status: 'processing' });
+        const res = await supabase.rpc('farmer_update_order_status', { target_order_id: orderId, new_delivery_status: 'processing' });
     if (res.error) throw res.error;
     return true;
   },
 
   farmerRejectOrder: async (orderId, orderItems) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    
+        
     // 1. Mark as cancelled
     const res = await supabase.rpc('farmer_update_order_status', { target_order_id: orderId, new_delivery_status: 'cancelled' });
     if (res.error) throw res.error;
@@ -494,29 +463,25 @@ export const dbService = {
   },
 
   deliveryPartnerUpdateOrderStatus: async (orderId, newDeliveryStatus) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.from('orders').update({ delivery_status: newDeliveryStatus }).eq('id', orderId).select().single();
+        const res = await supabase.from('orders').update({ delivery_status: newDeliveryStatus }).eq('id', orderId).select().single();
     if (res.error) throw res.error;
     return mapOrderToCamelCase(extract(res));
   },
 
   driverRejectAssignment: async (orderId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('unassign_delivery_partner', { target_order_id: orderId });
+        const res = await supabase.rpc('unassign_delivery_partner', { target_order_id: orderId });
     if (res.error) throw res.error;
     return true;
   },
 
   updateOrderStatus: async (id, status, isDeliveryStatus = false) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const updatePayload = isDeliveryStatus ? { delivery_status: status } : { payment_status: status };
+        const updatePayload = isDeliveryStatus ? { delivery_status: status } : { payment_status: status };
     const res = await supabase.from('orders').update(updatePayload).eq('id', id).select().single();
     return mapOrderToCamelCase(extract(res));
   },
 
   updateOrderStatusAdmin: async (id, deliveryStatus, paymentStatus) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_order_status_admin', { 
+        const res = await supabase.rpc('update_order_status_admin', { 
       target_order_id: id, 
       new_delivery_status: deliveryStatus,
       new_payment_status: paymentStatus
@@ -526,8 +491,7 @@ export const dbService = {
   },
 
   processFarmerPayout: async (farmerId) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('mark_farmer_payout_complete', { target_farmer_id: farmerId });
+        const res = await supabase.rpc('mark_farmer_payout_complete', { target_farmer_id: farmerId });
     if (res.error) throw res.error;
     return true;
   },
@@ -535,7 +499,7 @@ export const dbService = {
   // ─── USERS PROFILE ────────────────────────────────────
   getUser: async (uid) => {
     if (!checkConfig()) {
-      return MOCK_USERS.find(u => u.uid === uid || u.id === uid) || null;
+      return null;
     }
     const res = await supabase.from('profiles').select('*').eq('id', uid).single();
     return extract(res);
@@ -557,36 +521,31 @@ export const dbService = {
   },
 
   verifyUserKYC: async (uid) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('approve_farmer_kyc', { target_uid: uid });
+        const res = await supabase.rpc('approve_farmer_kyc', { target_uid: uid });
     if (res.error) throw res.error;
     return true;
   },
 
   rejectFarmerKYC: async (uid) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'rejected' });
+        const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'rejected' });
     if (res.error) throw res.error;
     return true;
   },
 
   suspendUser: async (uid) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'suspended' });
+        const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'suspended' });
     if (res.error) throw res.error;
     return true;
   },
 
   unblockUser: async (uid) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'verified' });
+        const res = await supabase.rpc('update_user_status', { target_uid: uid, new_status: 'verified' });
     if (res.error) throw res.error;
     return true;
   },
 
   updateUserRole: async (uid, newRole) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.rpc('update_user_role', { target_uid: uid, new_role: newRole });
+        const res = await supabase.rpc('update_user_role', { target_uid: uid, new_role: newRole });
     if (res.error) throw res.error;
     return true;
   },
@@ -613,37 +572,32 @@ export const dbService = {
   },
 
   deleteUser: async (uid) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const { error } = await supabase.rpc('remove_user_by_admin', { target_uid: uid });
+        const { error } = await supabase.rpc('remove_user_by_admin', { target_uid: uid });
     if (error) throw error;
     return uid;
   },
 
   // ─── SUPPORT TICKETS ───────────────────────────────────
   createSupportTicket: async (ticketData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const payload = mapSupportTicketToSnakeCase(ticketData);
+        const payload = mapSupportTicketToSnakeCase(ticketData);
     const res = await supabase.from('support_tickets').insert([payload]).select().single();
     return mapSupportTicketToCamelCase(extract(res));
   },
 
   getUserSupportTickets: async (userId) => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('support_tickets').select('*').eq('user_id', userId).order('created_at', { ascending: false });
+        const res = await supabase.from('support_tickets').select('*').eq('user_id', userId).order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(mapSupportTicketToCamelCase);
   },
 
   getAllSupportTickets: async () => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('support_tickets').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('support_tickets').select('*').order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(mapSupportTicketToCamelCase);
   },
 
   replySupportTicket: async (ticketId, replyText) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase
+        const res = await supabase
       .from('support_tickets')
       .update({ admin_reply: replyText, status: 'resolved' })
       .eq('id', ticketId)
@@ -654,44 +608,38 @@ export const dbService = {
 
   // ─── REVIEWS ───────────────────────────────────────────
   getReviews: async (productId) => {
-    if (!checkConfig()) return MOCK_REVIEWS.filter(r => r.productId === productId);
-    const res = await supabase.from('reviews').select('*').eq('product_id', productId);
+        const res = await supabase.from('reviews').select('*').eq('product_id', productId);
     const data = extract(res);
     return (data || []).map(mapReviewToCamelCase);
   },
 
   getAllReviews: async () => {
-    if (!checkConfig()) return MOCK_REVIEWS;
-    const res = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('reviews').select('*').order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(mapReviewToCamelCase);
   },
 
   addReview: async (reviewData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const payload = mapReviewToSnakeCase(reviewData);
+        const payload = mapReviewToSnakeCase(reviewData);
     const res = await supabase.from('reviews').insert([payload]).select().single();
     return mapReviewToCamelCase(extract(res));
   },
 
   // ─── FARMER REVIEWS ────────────────────────────────────
   getFarmerReviews: async (farmerId) => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('farmer_reviews').select('*').eq('farmer_id', farmerId);
+        const res = await supabase.from('farmer_reviews').select('*').eq('farmer_id', farmerId);
     const data = extract(res);
     return (data || []).map(mapFarmerReviewToCamelCase);
   },
 
   getAllFarmerReviews: async () => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('farmer_reviews').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('farmer_reviews').select('*').order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(mapFarmerReviewToCamelCase);
   },
 
   addFarmerReview: async (reviewData) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const payload = mapFarmerReviewToSnakeCase(reviewData);
+        const payload = mapFarmerReviewToSnakeCase(reviewData);
     const res = await supabase.from('farmer_reviews').insert([payload]).select().single();
     return mapFarmerReviewToCamelCase(extract(res));
   },
@@ -743,57 +691,47 @@ export const dbService = {
 
   // ─── MARKETING & CONTENT ────────────────────────────────
   getBanners: async () => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('promotional_banners').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('promotional_banners').select('*').order('created_at', { ascending: false });
     return extract(res) || [];
   },
   createBanner: async (data) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.from('promotional_banners').insert([data]).select().single();
+        const res = await supabase.from('promotional_banners').insert([data]).select().single();
     return extract(res);
   },
   deleteBanner: async (id) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    await supabase.from('promotional_banners').delete().eq('id', id);
+        await supabase.from('promotional_banners').delete().eq('id', id);
     return id;
   },
 
   getCoupons: async () => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('coupons').select('*').order('created_at', { ascending: false });
     return extract(res) || [];
   },
   createCoupon: async (data) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.from('coupons').insert([data]).select().single();
+        const res = await supabase.from('coupons').insert([data]).select().single();
     return extract(res);
   },
   deleteCoupon: async (id) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    await supabase.from('coupons').delete().eq('id', id);
+        await supabase.from('coupons').delete().eq('id', id);
     return id;
   },
 
   getNotifications: async () => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('system_notifications').select('*').order('created_at', { ascending: false });
+        const res = await supabase.from('system_notifications').select('*').order('created_at', { ascending: false });
     return extract(res) || [];
   },
   createNotification: async (data) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    const res = await supabase.from('system_notifications').insert([data]).select().single();
+        const res = await supabase.from('system_notifications').insert([data]).select().single();
     return extract(res);
   },
   deleteNotification: async (id) => {
-    if (!checkConfig()) throw new Error("Database not connected");
-    await supabase.from('system_notifications').delete().eq('id', id);
+        await supabase.from('system_notifications').delete().eq('id', id);
     return id;
   },
 
   // 🔔 FARMER NOTIFICATIONS
   getFarmerNotifications: async (farmerId) => {
-    if (!checkConfig()) return [];
-    const res = await supabase.from('farmer_notifications').select('*').eq('farmer_id', farmerId).order('created_at', { ascending: false });
+        const res = await supabase.from('farmer_notifications').select('*').eq('farmer_id', farmerId).order('created_at', { ascending: false });
     const data = extract(res);
     return (data || []).map(n => ({
       id: n.id,

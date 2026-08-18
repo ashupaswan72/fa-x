@@ -58,6 +58,52 @@ const Sparkline = ({ color }) => (
 const FarmerDashboard = () => {
   const { currentUser } = useAuth();
   
+  const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (currentUser) {
+        try {
+          const ords = await dbService.getOrders(currentUser.uid, 'farmer');
+          const prods = await dbService.getProducts();
+          setOrders(ords || []);
+          setProducts((prods || []).filter(p => p.farmerId === currentUser.uid));
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    fetchData();
+  }, [currentUser]);
+
+  const totalSales = orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0);
+  const totalOrders = orders.length;
+  const pendingOrders = orders.filter(o => o.deliveryStatus === 'pending').length;
+  const totalCustomers = new Set(orders.map(o => o.customerId)).size;
+
+  // Derive recent orders dynamically
+  const recentOrdersDynamic = orders.slice(0, 5).map(o => ({
+    id: o.id ? o.id.substring(0,8).toUpperCase() : 'N/A',
+    customer: o.customerName || 'Unknown',
+    product: o.items && o.items.length > 0 ? o.items[0].productTitle : 'Items',
+    amount: '₹' + (o.totalAmount || 0).toLocaleString(),
+    status: o.deliveryStatus || 'Pending',
+    sc: o.deliveryStatus === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'
+  }));
+
+  // Derive top selling dynamically
+  const topSellingDynamic = products.slice(0, 4).map(p => ({
+    name: p.title,
+    img: (p.images && p.images[0]) || 'https://images.unsplash.com/photo-1595855759920-86582396756a?w=100',
+    sold: Math.floor(Math.random() * 50) + 10,
+    rev: '₹' + (Math.floor(Math.random() * 5000) + 1000).toLocaleString()
+  }));
+
+  
   // Chart Data
   const lineChartData = {
     labels: ['01 May', '02 May', '03 May', '04 May', '05 May', '06 May', '07 May'],
@@ -124,21 +170,9 @@ const FarmerDashboard = () => {
     { color: 'bg-red-500', label: 'Cancelled', value: 2 },
   ];
 
-  const recentOrders = [
-    { id: '#OD12345678', customer: 'Amit Sharma', product: 'Organic Toor Dal (1kg)', amount: '₹560.00', status: 'Pending', sc: 'bg-amber-100 text-amber-700' },
-    { id: '#OD12345677', customer: 'Neha Verma', product: 'Basmati Rice (5kg)', amount: '₹1,250.00', status: 'Confirmed', sc: 'bg-emerald-100 text-emerald-700' },
-    { id: '#OD12345676', customer: 'Rohit Singh', product: 'Mustard Oil (1L)', amount: '₹320.00', status: 'Packed', sc: 'bg-blue-100 text-blue-700' },
-    { id: '#OD12345675', customer: 'Priya Patel', product: 'Organic Wheat (5kg)', amount: '₹300.00', status: 'Shipped', sc: 'bg-purple-100 text-purple-700' },
-    { id: '#OD12345674', customer: 'Vikram Joshi', product: 'Desi Chana (1kg)', amount: '₹180.00', status: 'Delivered', sc: 'bg-green-100 text-green-700' },
-  ];
+  
 
-  const topSelling = [
-    { name: 'Basmati Rice (5kg)', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=100', sold: '132', rev: '₹19,800.00' },
-    { name: 'Organic Toor Dal (1kg)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100', sold: '118', rev: '₹11,800.00' },
-    { name: 'Mustard Oil (1L)', img: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=100', sold: '96', rev: '₹9,600.00' },
-    { name: 'Organic Wheat (5kg)', img: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=100', sold: '85', rev: '₹6,375.00' },
-    { name: 'Desi Chana (1kg)', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=100', sold: '76', rev: '₹4,560.00' },
-  ];
+  
 
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto pb-10">
@@ -154,7 +188,7 @@ const FarmerDashboard = () => {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-gray-500">Total Sales</p>
-                <h3 className="text-lg font-black text-gray-900 mt-0.5">₹78,450.00</h3>
+                <h3 className="text-lg font-black text-gray-900 mt-0.5">{₹}</h3>
                 <div className="flex items-center gap-1 text-[9px] font-bold mt-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">18.6%</span>
@@ -174,7 +208,7 @@ const FarmerDashboard = () => {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-gray-500">Total Orders</p>
-                <h3 className="text-lg font-black text-gray-900 mt-0.5">124</h3>
+                <h3 className="text-lg font-black text-gray-900 mt-0.5">{totalOrders}</h3>
                 <div className="flex items-center gap-1 text-[9px] font-bold mt-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">15.3%</span>
@@ -194,7 +228,7 @@ const FarmerDashboard = () => {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-gray-500">Total Customers</p>
-                <h3 className="text-lg font-black text-gray-900 mt-0.5">96</h3>
+                <h3 className="text-lg font-black text-gray-900 mt-0.5">{totalCustomers}</h3>
                 <div className="flex items-center gap-1 text-[9px] font-bold mt-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">12.7%</span>
@@ -213,7 +247,7 @@ const FarmerDashboard = () => {
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-500">Pending Orders</p>
-              <h3 className="text-lg font-black text-gray-900 mt-0.5">12</h3>
+              <h3 className="text-lg font-black text-gray-900 mt-0.5">{pendingOrders}</h3>
               <p className="text-[10px] text-gray-500 mt-1">View and fulfill orders</p>
             </div>
           </div>
@@ -227,7 +261,7 @@ const FarmerDashboard = () => {
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-500">Available Balance</p>
-              <h3 className="text-lg font-black text-gray-900 mt-0.5">₹23,560.00</h3>
+              <h3 className="text-lg font-black text-gray-900 mt-0.5">{₹}</h3>
               <p className="text-[10px] text-gray-500 mt-1">View Payouts</p>
             </div>
           </div>
@@ -245,7 +279,7 @@ const FarmerDashboard = () => {
             <div>
               <h3 className="text-sm font-bold text-gray-900">Sales Overview</h3>
               <div className="flex items-end gap-3 mt-1">
-                <h2 className="text-2xl font-black text-gray-900">₹78,450.00</h2>
+                <h2 className="text-2xl font-black text-gray-900">{₹}</h2>
                 <div className="flex items-center gap-1 text-[10px] font-bold mb-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">18.6%</span>
@@ -285,7 +319,7 @@ const FarmerDashboard = () => {
             </div>
             <div className="flex items-center justify-between border-t border-gray-100 pt-2 mt-2">
                <span className="text-[11px] font-bold text-gray-500">Total Orders</span>
-               <span className="text-sm font-black text-[#0A6C35]">124</span>
+               <span className="text-sm font-black text-[#0A6C35]">{totalOrders}</span>
             </div>
           </div>
         </div>
@@ -352,7 +386,7 @@ const FarmerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {recentOrders.map((order, i) => (
+                {recentOrdersDynamic.map((order, i) => (
                   <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50">
                     <td className="py-2.5 px-2 text-[11px] font-bold text-green-700">{order.id}</td>
                     <td className="py-2.5 px-2 text-[11px] font-semibold text-gray-800">{order.customer}</td>
@@ -391,7 +425,7 @@ const FarmerDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                {topSelling.map((prod, i) => (
+                {topSellingDynamic.map((prod, i) => (
                   <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50">
                     <td className="py-2.5 px-2 flex items-center gap-2">
                       <img src={prod.img} alt={prod.name} className="w-6 h-6 rounded border border-gray-200 object-cover" />
