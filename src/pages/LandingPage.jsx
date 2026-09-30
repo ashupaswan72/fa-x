@@ -9,6 +9,7 @@ import {
 import { dbService } from '../services/database';
 import { useCart } from '../contexts/CartContext';
 import { showToast } from '../components/ui/Toast';
+import heroImage from '../assets/me.jpeg';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -127,7 +128,7 @@ const LandingPage = () => {
             <div className="flex-1 relative w-full h-[450px] lg:h-[550px] flex items-center justify-center">
               {/* Main Image Mask */}
               <div className="relative w-full max-w-md h-full rounded-[40px] overflow-hidden border-8 border-white/5 shadow-2xl">
-                <img src="src/assets/me.jpeg" alt="Fresh Produce" className="w-full h-full object-cover" />
+                <img src={heroImage} alt="Fresh Produce" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#11311F] via-transparent to-transparent opacity-80"></div>
               </div>
               
