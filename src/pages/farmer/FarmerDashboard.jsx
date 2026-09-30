@@ -188,7 +188,7 @@ const FarmerDashboard = () => {
               </div>
               <div>
                 <p className="text-[11px] font-bold text-gray-500">Total Sales</p>
-                <h3 className="text-lg font-black text-gray-900 mt-0.5">{₹}</h3>
+                <h3 className="text-lg font-black text-gray-900 mt-0.5">{`₹${totalSales.toLocaleString()}`}</h3>
                 <div className="flex items-center gap-1 text-[9px] font-bold mt-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">18.6%</span>
@@ -261,7 +261,7 @@ const FarmerDashboard = () => {
             </div>
             <div>
               <p className="text-[11px] font-bold text-gray-500">Available Balance</p>
-              <h3 className="text-lg font-black text-gray-900 mt-0.5">{₹}</h3>
+              <h3 className="text-lg font-black text-gray-900 mt-0.5">{`₹${(totalSales * 0.9).toLocaleString()}`}</h3>
               <p className="text-[10px] text-gray-500 mt-1">View Payouts</p>
             </div>
           </div>
@@ -279,7 +279,7 @@ const FarmerDashboard = () => {
             <div>
               <h3 className="text-sm font-bold text-gray-900">Sales Overview</h3>
               <div className="flex items-end gap-3 mt-1">
-                <h2 className="text-2xl font-black text-gray-900">{₹}</h2>
+                <h2 className="text-2xl font-black text-gray-900">{`₹${totalSales.toLocaleString()}`}</h2>
                 <div className="flex items-center gap-1 text-[10px] font-bold mb-1">
                   <ArrowUpRight className="w-3 h-3 text-green-500" />
                   <span className="text-green-500">18.6%</span>

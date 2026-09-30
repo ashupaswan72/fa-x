@@ -256,9 +256,9 @@ export const dbService = {
   },
 
   getProducts: async () => {
-        const res = await supabase.from('products').select('*').order('created_at', { ascending: false });
+    const res = await supabase.from('products').select('*').order('created_at', { ascending: false });
     const data = extract(res);
-    return data && data.length > 0 ? data.map() : [];
+    return data && data.length > 0 ? data.map(mapProductToCamelCase) : [];
   },
 
   getProduct: async (id) => {

@@ -4,11 +4,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useWallet } from '../../contexts/WalletContext';
 import { formatPrice, formatDate, getStatusBadgeStyle } from '../../utils/helpers';
 import { payWithRazorpay } from '../../services/razorpay';
+import { generateInvoice } from '../../utils/generateInvoice';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import { showToast } from '../../components/ui/Toast';
 import OrderTracking from '../../components/ui/OrderTracking';
-import { CreditCard, Wallet, HelpCircle, Map, Star } from 'lucide-react';
+import { CreditCard, Wallet, HelpCircle, Map, Star, Download } from 'lucide-react';
 
 const CustomerOrders = () => {
   const { currentUser } = useAuth();
@@ -119,6 +120,16 @@ const CustomerOrders = () => {
     }
   };
 
+  const handleDownloadInvoice = (order) => {
+    try {
+      generateInvoice(order);
+      showToast("Invoice downloaded successfully", "success");
+    } catch (err) {
+      console.error(err);
+      showToast("Failed to generate invoice", "error");
+    }
+  };
+
   return (
     <div className="space-y-10">
       <h1 className="text-3xl font-black text-dark">My Orders</h1>
@@ -148,6 +159,12 @@ const CustomerOrders = () => {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 mt-2 md:mt-0">
+                    <button 
+                      onClick={() => handleDownloadInvoice(order)}
+                      className="text-[10px] font-bold bg-white text-[#4CAF50] border border-[#4CAF50]/30 hover:bg-[#E8F3EA] px-3 py-1.5 rounded-full transition-colors flex items-center gap-1 shadow-sm"
+                    >
+                      <Download className="w-3 h-3" /> Invoice
+                    </button>
                     <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${getStatusBadgeStyle(order.paymentStatus)}`}>
                       Payment: {order.paymentStatus}
                     </span>

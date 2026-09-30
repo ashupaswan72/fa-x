@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 
 // Contexts & Providers
-import { AuthProvider } from './contexts/AuthContext';
+import { useAuth, AuthProvider } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
 import { WalletProvider } from './contexts/WalletContext';
 
@@ -10,6 +10,7 @@ import { WalletProvider } from './contexts/WalletContext';
 import { ToastContainer, BannerContainer } from './components/ui/Toast';
 
 // Common Components
+import TopBar from './components/common/TopBar';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
 import ProtectedRoute from './components/common/ProtectedRoute';
@@ -27,6 +28,11 @@ import ProfilePage from './pages/ProfilePage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import FAQPage from './pages/FAQPage';
 import AboutUsPage from './pages/AboutUsPage';
+import ShopPage from './pages/ShopPage';
+import CategoriesPage from './pages/CategoriesPage';
+import FarmersPage from './pages/FarmersPage';
+import GroupBuyingPage from './pages/GroupBuyingPage';
+import AIMarketPage from './pages/AIMarketPage';
 
 // Auth Pages
 import Login from './pages/auth/Login';
@@ -97,6 +103,53 @@ const NotFoundPage = () => {
   );
 };
 
+// Maintenance Guard
+const MaintenanceGuard = ({ children }) => {
+  const { currentUser } = useAuth();
+  
+  // Listen to storage events to immediately update across tabs in demo
+  const [isMaintenance, setIsMaintenance] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMaintenance = () => {
+      const storedConfig = localStorage.getItem('fax_system_config');
+      if (storedConfig) {
+        try {
+          const config = JSON.parse(storedConfig);
+          setIsMaintenance(config.maintenanceMode === true);
+        } catch (e) {}
+      }
+    };
+    
+    checkMaintenance();
+    window.addEventListener('storage', checkMaintenance);
+    // Custom event for same-window updates
+    window.addEventListener('config-updated', checkMaintenance);
+    return () => {
+      window.removeEventListener('storage', checkMaintenance);
+      window.removeEventListener('config-updated', checkMaintenance);
+    };
+  }, []);
+
+  if (isMaintenance && (!currentUser || currentUser.role !== 'admin')) {
+    return (
+      <div className="min-h-screen bg-[#f8f9fa] flex flex-col items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center space-y-4 border border-gray-100">
+          <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-100">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <h1 className="text-2xl font-black text-dark tracking-tight">Down for Maintenance</h1>
+          <p className="text-sm font-semibold text-gray-500 leading-relaxed">
+            FA-X is currently undergoing scheduled platform upgrades to serve you better. We'll be back shortly!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return children;
+};
+
 // Wrap component inside dashboard layout
 const DashboardWrapper = ({ Component }) => {
   return (
@@ -128,6 +181,7 @@ const SellerWrapper = ({ Component }) => {
 const PublicLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
+      <TopBar />
       <Navbar />
       <div className="flex-grow py-8 max-w-7xl mx-auto w-full px-4 md:px-8">
         {children}
@@ -141,16 +195,22 @@ const App = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <CartProvider>
-          <WalletProvider>
-            
-            {/* Globals Toast container */}
-            <ToastContainer />
+        <MaintenanceGuard>
+          <CartProvider>
+            <WalletProvider>
+              
+              {/* Globals Toast container */}
+              <ToastContainer />
             <BannerContainer />
 
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<PublicLayout><LandingPage /></PublicLayout>} />
+              <Route path="/shop" element={<PublicLayout><ShopPage /></PublicLayout>} />
+              <Route path="/categories" element={<PublicLayout><CategoriesPage /></PublicLayout>} />
+              <Route path="/farmers" element={<PublicLayout><FarmersPage /></PublicLayout>} />
+              <Route path="/group-buying" element={<PublicLayout><GroupBuyingPage /></PublicLayout>} />
+              <Route path="/ai-market" element={<PublicLayout><AIMarketPage /></PublicLayout>} />
               <Route path="/product/:id" element={<PublicLayout><ProductDetailsPage /></PublicLayout>} />
               <Route path="/cart" element={<PublicLayout><CartPage /></PublicLayout>} />
               <Route path="/how-it-works" element={<PublicLayout><HowItWorksPage /></PublicLayout>} />
@@ -398,8 +458,9 @@ const App = () => {
               <Route path="*" element={<PublicLayout><NotFoundPage /></PublicLayout>} />
             </Routes>
 
-          </WalletProvider>
-        </CartProvider>
+            </WalletProvider>
+          </CartProvider>
+        </MaintenanceGuard>
       </AuthProvider>
     </BrowserRouter>
   );

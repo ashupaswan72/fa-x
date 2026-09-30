@@ -53,6 +53,7 @@ const AdminSettings = () => {
     e.preventDefault();
     // Persist to local storage (acts as our global settings DB for this demo)
     localStorage.setItem('fax_system_config', JSON.stringify(config));
+    window.dispatchEvent(new Event('config-updated'));
     showToast("Global configuration saved successfully!", "success");
   };
 
@@ -322,6 +323,21 @@ const AdminSettings = () => {
                   <Lock className="w-4 h-4" /> Security Policies
                 </h2>
                 
+                <label className="flex items-start space-x-3 text-dark cursor-pointer p-4 bg-red-50/50 rounded-xl border border-red-200 hover:border-red-300 transition-colors">
+                  <input 
+                    type="checkbox" 
+                    checked={config.maintenanceMode || false}
+                    onChange={(e) => handleConfigChange('maintenanceMode', e.target.checked)}
+                    className="w-4.5 h-4.5 mt-0.5 rounded border-red-300 text-red-500" 
+                  />
+                  <div>
+                    <p className="font-bold text-sm text-red-900 flex items-center gap-2">
+                      <ShieldAlert className="w-4 h-4" /> EMERGENCY: SHUT DOWN WEBSITE (Maintenance Mode)
+                    </p>
+                    <p className="text-[10px] text-red-700 font-medium mt-1">If enabled, the public website and all customer/farmer dashboards will immediately lock down. Only administrators will be able to access the site. (Warning: Using LocalStorage for this demo)</p>
+                  </div>
+                </label>
+
                 <label className="flex items-start space-x-3 text-dark cursor-pointer p-4 bg-rose-50/30 rounded-xl border border-rose-100 hover:border-rose-200 transition-colors">
                   <input 
                     type="checkbox" 
