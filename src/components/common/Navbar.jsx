@@ -86,7 +86,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+        <div className="hidden md:flex items-center gap-4 sm:gap-6 shrink-0">
           
           {currentUser ? (
             <Link to={currentUser.role === 'farmer' ? '/farmer' : currentUser.role === 'admin' ? '/admin' : '/customer'} className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4CAF50] transition-colors group">

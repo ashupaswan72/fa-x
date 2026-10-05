@@ -13,6 +13,7 @@ import { ToastContainer, BannerContainer } from './components/ui/Toast';
 import TopBar from './components/common/TopBar';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
+import MobileBottomNav from './components/common/MobileBottomNav';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 import DashboardLayout from './layouts/DashboardLayout';
@@ -180,13 +181,14 @@ const SellerWrapper = ({ Component }) => {
 // Public Route layout wrapper
 const PublicLayout = ({ children }) => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen pb-16 md:pb-0">
       <TopBar />
       <Navbar />
       <div className="flex-grow py-8 max-w-7xl mx-auto w-full px-4 md:px-8">
         {children}
       </div>
       <Footer />
+      <MobileBottomNav />
     </div>
   );
 };
