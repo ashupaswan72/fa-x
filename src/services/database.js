@@ -206,13 +206,13 @@ export const dbService = {
   getUsers: async () => {
         const res = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
     const data = extract(res);
-    return data && data.length > 0 ? data.map() : [];
+    return data && data.length > 0 ? data.map(mapUserToCamelCase) : [];
   },
 
   getDeliveryPartners: async () => {
         const res = await supabase.from('profiles').select('*').eq('role', 'delivery');
     const data = extract(res);
-    return data && data.length > 0 ? data.map() : [];
+    return data && data.length > 0 ? data.map(mapUserToCamelCase) : [];
   },
 
   addDeliveryPartner: async (partnerData) => {
