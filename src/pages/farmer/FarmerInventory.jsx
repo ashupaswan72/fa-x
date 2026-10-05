@@ -25,6 +25,13 @@ const FarmerInventory = () => {
   const [isOrganic, setIsOrganic] = useState(false);
   const [isPreorder, setIsPreorder] = useState(false);
   const [advancePct, setAdvancePct] = useState(25);
+  
+  // Group Buy States
+  const [isGroupBuy, setIsGroupBuy] = useState(false);
+  const [targetMembers, setTargetMembers] = useState(10);
+  const [discountPct, setDiscountPct] = useState(15);
+  const [deadline, setDeadline] = useState("");
+
   const [imageUrl, setImageUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -58,6 +65,10 @@ const FarmerInventory = () => {
     setIsOrganic(false);
     setIsPreorder(false);
     setAdvancePct(25);
+    setIsGroupBuy(false);
+    setTargetMembers(10);
+    setDiscountPct(15);
+    setDeadline("");
     setImageUrl("");
     setImageFile(null);
     setIsModalOpen(true);
@@ -75,6 +86,7 @@ const FarmerInventory = () => {
     setIsOrganic(product.isOrganic);
     setIsPreorder(product.isPreorder);
     setAdvancePct(product.advancePct || 25);
+    setIsGroupBuy(false); // We don't edit group buys from here for now
     setImageUrl(product.images?.[0] || "");
     setImageFile(null);
     setIsModalOpen(true);
@@ -128,7 +140,20 @@ const FarmerInventory = () => {
         await dbService.updateProduct(editingProduct.id, prodPayload);
         showToast("Crop specifications updated! 🌾", "success");
       } else {
-        await dbService.addProduct(prodPayload);
+        const newProd = await dbService.addProduct(prodPayload);
+        
+        if (isGroupBuy && newProd) {
+          await dbService.createGroupBuy({
+            productId: newProd.id,
+            productTitle: newProd.title,
+            farmerId: currentUser.uid,
+            targetMembers: Number(targetMembers),
+            currentMembers: 0,
+            discountPct: Number(discountPct),
+            deadline: deadline || new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            buyerIds: []
+          });
+        }
         showToast("New crop added to inventory successfully! 🌾", "success");
       }
       setIsModalOpen(false);
@@ -387,7 +412,56 @@ const FarmerInventory = () => {
                 </div>
               )}
 
-              <Button 
+              
+                {!editingProduct && (
+                  <>
+                    <div className="flex space-x-6 border-t border-gray-50 pt-4 mb-4 mt-4">
+                      <label className="flex items-center space-x-2 text-dark cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={isGroupBuy} 
+                          onChange={(e) => setIsGroupBuy(e.target.checked)}
+                          className="w-4.5 h-4.5 rounded border-blue-300 text-blue-600"
+                        />
+                        <span>🤝 Enable Group Buy</span>
+                      </label>
+                    </div>
+
+                    {isGroupBuy && (
+                      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-4 animate-fade-in mb-4">
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-blue-800 uppercase tracking-widest block">Target Members</label>
+                          <input 
+                            type="number" 
+                            value={targetMembers} 
+                            onChange={(e) => setTargetMembers(e.target.value)}
+                            className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 text-dark"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-blue-800 uppercase tracking-widest block">Discount Percentage (%)</label>
+                          <input 
+                            type="number" 
+                            value={discountPct} 
+                            onChange={(e) => setDiscountPct(e.target.value)}
+                            className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 text-dark"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-blue-800 uppercase tracking-widest block">Deadline</label>
+                          <input 
+                            type="date" 
+                            value={deadline} 
+                            onChange={(e) => setDeadline(e.target.value)}
+                            className="w-full bg-white border border-blue-200 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 text-dark"
+                          />
+                        </div>
+                        <p className="text-[9px] text-blue-600">Customers will get this discount if the target members join before the deadline.</p>
+                      </div>
+                    )}
+                  </>
+                )}
+<Button 
                 type="submit" 
                 variant="primary" 
                 fullWidth 
