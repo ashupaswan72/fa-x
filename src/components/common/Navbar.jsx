@@ -62,7 +62,7 @@ const Navbar = () => {
           </button>
           
           <Link to="/" className="flex items-center gap-1.5">
-            <img src={logoImg} alt="FA-X Logo" className="h-10 rounded shadow-sm" />
+            <img src={logoImg} alt="FA-X Logo" className="h-14 w-14 rounded-full shadow-sm object-cover" />
           </Link>
         </div>
 

@@ -63,7 +63,7 @@ const AdminLayout = ({ children }) => {
              <Menu className="w-6 h-6 text-white" />
           </div>
           <Link to="/" className="flex flex-col text-white pl-2">
-            <img src={logoImg} alt="FA-X Logo" className="h-12 w-auto bg-white rounded-md p-1 shadow-sm" />
+            <img src={logoImg} alt="FA-X Logo" className="h-16 w-16 bg-white rounded-full p-1 shadow-sm object-cover" />
           </Link>
         </div>
 

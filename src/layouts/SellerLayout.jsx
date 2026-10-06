@@ -54,7 +54,7 @@ const SellerLayout = ({ children }) => {
           <button onClick={() => setIsOpen(!isOpen)} className="text-gray-700 p-1">
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <img src={logoImg} alt="FA-X Logo" className="h-8 w-auto bg-white rounded shadow-sm" />
+          <img src={logoImg} alt="FA-X Logo" className="h-12 w-12 bg-white rounded-full p-0.5 shadow-sm object-cover" />
         </div>
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full overflow-hidden">
@@ -76,7 +76,7 @@ const SellerLayout = ({ children }) => {
             {/* Sidebar Header / Logo */}
             <div className="h-20 flex items-center px-6 shrink-0 border-b border-white/10">
               <Link to="/" className="flex flex-col text-white">
-                <img src={logoImg} alt="FA-X Logo" className="h-12 w-auto bg-white rounded-md p-1 shadow-sm" />
+                <img src={logoImg} alt="FA-X Logo" className="h-16 w-16 bg-white rounded-full p-1 shadow-sm object-cover" />
               </Link>
             </div>
 

@@ -99,7 +99,7 @@ const Register = () => {
     <div className="max-w-2xl mx-auto py-12 px-4 space-y-6">
       
       <div className="text-center space-y-2">
-        <img src={logoImg} alt="FA-X Logo" className="h-16 mx-auto rounded shadow-sm mb-4" />
+        <img src={logoImg} alt="FA-X Logo" className="h-24 w-24 mx-auto rounded-full shadow-md mb-4 object-cover" />
         <h1 className="text-3xl font-black text-dark">Create Your FA-X Account</h1>
         <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Join the Farm Access Exchange Network</p>
       </div>

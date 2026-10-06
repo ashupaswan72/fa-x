@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Brand Info */}
           <div className="lg:col-span-1 space-y-6">
             <Link to="/" className="flex items-center gap-1.5 inline-block">
-              <img src={logoImg} alt="FA-X Logo" className="h-10 rounded shadow-sm" />
+              <img src={logoImg} alt="FA-X Logo" className="h-14 w-14 rounded-full shadow-sm object-cover" />
             </Link>
             
             <p className="text-xs font-medium text-gray-500 leading-relaxed">
