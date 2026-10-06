@@ -35,8 +35,6 @@ const Login = () => {
   const handleGoogleLogin = async () => {
     try {
       await loginWithGoogle();
-      showToast("Google login successful! 🌾", "success");
-      navigate(redirectPath, { replace: true });
     } catch (err) {
       console.error(err);
       showToast("Google Login failed.", "error");
