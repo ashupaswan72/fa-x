@@ -7,7 +7,7 @@ import {
   Megaphone, CreditCard, Truck, RefreshCcw, Star, FileSpreadsheet,
   Settings, HelpCircle, ShieldCheck, ScrollText, Leaf,
   LogOut } from 'lucide-react';
-import logoImg from '../../assets/logo.jpg';
+import logoImg from '../assets/logo.jpg';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children }) => {
