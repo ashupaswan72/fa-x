@@ -5,8 +5,8 @@ import {
   Menu, X, Search, Bell, MessageSquare, Store, Download, UserCircle, 
   LayoutDashboard, TrendingUp, ShoppingBag, Package, Users, UsersRound,
   Megaphone, CreditCard, Truck, RefreshCcw, Star, FileSpreadsheet,
-  Settings, HelpCircle, ShieldCheck, ScrollText, Leaf
-LogOut } from 'lucide-react';
+  Settings, HelpCircle, ShieldCheck, ScrollText, Leaf,
+  LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children }) => {
