@@ -16,7 +16,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="ePWMQ2FPVWvzhvkOGB1l_CJuF7I8lp1S1ThKDUbaVYs" />
-  </head>
+  
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:red;color:white;z-index:99999;padding:20px;font-family:monospace;white-space:pre-wrap;';
+        errDiv.innerText = 'JS ERROR: ' + message + '\n\n' + (error && error.stack ? error.stack : '');
+        document.body.appendChild(errDiv);
+      };
+      window.addEventListener('unhandledrejection', function(event) {
+        const errDiv = document.createElement('div');
+        errDiv.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:darkred;color:white;z-index:99999;padding:20px;font-family:monospace;white-space:pre-wrap;';
+        errDiv.innerText = 'PROMISE REJECTION: ' + event.reason;
+        document.body.appendChild(errDiv);
+      });
+    </script>
+</head>
   <body class="bg-background">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
