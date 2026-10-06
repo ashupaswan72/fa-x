@@ -7,6 +7,7 @@ import {
   Megaphone, CreditCard, Truck, RefreshCcw, Star, FileSpreadsheet,
   Settings, HelpCircle, ShieldCheck, ScrollText, Leaf,
   LogOut } from 'lucide-react';
+import logoImg from '../../assets/logo.jpg';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children }) => {
@@ -62,11 +63,7 @@ const AdminLayout = ({ children }) => {
              <Menu className="w-6 h-6 text-white" />
           </div>
           <Link to="/" className="flex flex-col text-white pl-2">
-            <div className="flex items-center">
-              <span className="text-3xl font-black tracking-tighter italic">FAX</span>
-              <Leaf className="w-5 h-5 ml-0.5 -mt-2 rotate-12" fill="white" />
-            </div>
-            <span className="text-[9px] tracking-[0.1em] font-medium leading-none -mt-1 opacity-90">Farm Access Exchange</span>
+            <img src={logoImg} alt="FA-X Logo" className="h-12 w-auto bg-white rounded-md p-1 shadow-sm" />
           </Link>
         </div>
 

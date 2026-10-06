@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import logoImg from '../../assets/logo.jpg';
 import { useAuth } from '../../contexts/AuthContext';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
@@ -46,7 +47,7 @@ const Login = () => {
       
       {/* Brand Icon Header */}
       <div className="text-center space-y-2">
-        <span className="text-4xl">🌾</span>
+        <img src={logoImg} alt="FA-X Logo" className="h-16 mx-auto rounded shadow-sm mb-4" />
         <h1 className="text-3xl font-black text-dark">Welcome to FA-X</h1>
         <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">Farm Access Exchange Portal</p>
       </div>

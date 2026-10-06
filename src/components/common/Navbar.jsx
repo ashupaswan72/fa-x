@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Leaf, Search, User, LogOut, ChevronDown, MapPin, Menu, X } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
+import logoImg from '../../assets/logo.jpg';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
@@ -61,13 +62,7 @@ const Navbar = () => {
           </button>
           
           <Link to="/" className="flex items-center gap-1.5">
-            <div className="bg-[#4CAF50] p-1.5 rounded-lg shadow-sm">
-              <Leaf className="w-5 h-5 text-white fill-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-2xl font-black text-[#11311F] tracking-tighter leading-none">FA-X</span>
-              <span className="text-[8px] font-bold tracking-[0.2em] text-[#4CAF50] uppercase mt-0.5">Farm Access</span>
-            </div>
+            <img src={logoImg} alt="FA-X Logo" className="h-10 rounded shadow-sm" />
           </Link>
         </div>
 

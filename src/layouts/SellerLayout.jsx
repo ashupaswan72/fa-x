@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logoImg from '../../assets/logo.jpg';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Menu, X, Search, Bell, MessageSquare, Home, ShoppingBag, 
@@ -53,9 +54,7 @@ const SellerLayout = ({ children }) => {
           <button onClick={() => setIsOpen(!isOpen)} className="text-gray-700 p-1">
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
-          <div className="flex items-center gap-1 text-[#0A6C35] font-black text-xl italic tracking-tighter">
-            FA-X <Leaf className="w-4 h-4 -mt-1 rotate-12" fill="currentColor" />
-          </div>
+          <img src={logoImg} alt="FA-X Logo" className="h-8 w-auto bg-white rounded shadow-sm" />
         </div>
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full overflow-hidden">
@@ -77,11 +76,7 @@ const SellerLayout = ({ children }) => {
             {/* Sidebar Header / Logo */}
             <div className="h-20 flex items-center px-6 shrink-0 border-b border-white/10">
               <Link to="/" className="flex flex-col text-white">
-                <div className="flex items-center">
-                  <span className="text-3xl font-black tracking-tighter italic">FA-X</span>
-                  <Leaf className="w-6 h-6 ml-0.5 -mt-2 rotate-12" fill="white" />
-                </div>
-                <span className="text-[10px] tracking-wider font-medium leading-none mt-1 opacity-90">Farm Access Exchange</span>
+                <img src={logoImg} alt="FA-X Logo" className="h-12 w-auto bg-white rounded-md p-1 shadow-sm" />
               </Link>
             </div>
 
