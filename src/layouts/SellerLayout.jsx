@@ -7,6 +7,7 @@ import {
   Star, Megaphone, BarChart3, Leaf, HelpCircle, Settings, 
   HeadphonesIcon, CheckCircle2, ChevronDown, Map
 } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SellerLayout = ({ children }) => {
@@ -120,9 +121,13 @@ const SellerLayout = ({ children }) => {
                 <p className="text-[11px] font-bold text-white/50 uppercase tracking-wider">Need Help?</p>
                 <p className="text-[10px] text-white/70 mt-0.5">We're here to help you</p>
               </div>
-              <button className="w-full flex items-center justify-center gap-2 border border-white/30 text-white hover:bg-white/10 py-2.5 rounded-lg text-sm font-semibold transition-colors">
+              <button className="w-full flex items-center justify-center gap-2 border border-white/30 text-white hover:bg-white/10 py-2.5 rounded-lg text-sm font-semibold transition-colors mb-2">
                 <HeadphonesIcon className="w-4 h-4" />
                 <span>Contact Support</span>
+              </button>
+              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 bg-red-500/20 text-red-100 hover:bg-red-500/40 border border-red-500/30 py-2.5 rounded-lg text-sm font-semibold transition-colors cursor-pointer">
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
               </button>
             </div>
           </motion.aside>

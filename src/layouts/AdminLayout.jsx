@@ -6,7 +6,7 @@ import {
   LayoutDashboard, TrendingUp, ShoppingBag, Package, Users, UsersRound,
   Megaphone, CreditCard, Truck, RefreshCcw, Star, FileSpreadsheet,
   Settings, HelpCircle, ShieldCheck, ScrollText, Leaf
-} from 'lucide-react';
+LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AdminLayout = ({ children }) => {
@@ -199,6 +199,10 @@ const AdminLayout = ({ children }) => {
 
               {/* Sidebar Footer */}
               <div className="p-4 border-t border-amber-100 bg-amber-50/30">
+                <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 py-2 mb-3 rounded-lg text-sm font-bold transition-colors cursor-pointer">
+                  <LogOut className="w-4 h-4" />
+                  <span>Log Out</span>
+                </button>
                 <div className="flex items-center gap-2 mb-1">
                   <Leaf className="w-4 h-4 text-amber-600/50" />
                   <span className="text-xs font-bold text-[#11311F]">FAX Admin Panel</span>

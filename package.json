@@ -37,6 +37,6 @@
     "oxlint": "^1.71.0",
     "tailwindcss": "^4.3.2",
     "vite": "^8.1.1",
-    "vite-plugin-pwa": "^0.21.1"
+    "vite-plugin-pwa": "^2.0.0"
   }
 }

@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Leaf, Search, User, ChevronDown, MapPin, Menu, X } from 'lucide-react';
+import { ShoppingCart, Leaf, Search, User, LogOut, ChevronDown, MapPin, Menu, X } from 'lucide-react';
 import { useCart } from '../../contexts/CartContext';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const { cartItems } = useCart() || { cartItems: [] };
-  const { currentUser } = useAuth() || {};
+  const { currentUser, LogOut, logout } = useAuth() || {};
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const handleLogout = async () => {
+    if (logout) {
+      await logout();
+      navigate('/login');
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -89,12 +97,20 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-4 sm:gap-6 shrink-0">
           
           {currentUser ? (
-            <Link to={currentUser.role === 'farmer' ? '/farmer' : currentUser.role === 'admin' ? '/admin' : '/customer'} className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4CAF50] transition-colors group">
-              <div className="bg-gray-100 p-2 rounded-full group-hover:bg-[#E8F3EA] transition-colors">
-                <User className="w-4 h-4 text-[#11311F] group-hover:text-[#4CAF50]" />
-              </div>
-              <span className="text-[10px] font-bold text-[#11311F]">Account</span>
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link to={currentUser.role === 'farmer' ? '/farmer' : currentUser.role === 'admin' ? '/admin' : '/customer'} className="flex flex-col items-center gap-0.5 text-gray-600 hover:text-[#4CAF50] transition-colors group">
+                <div className="bg-gray-100 p-2 rounded-full group-hover:bg-[#E8F3EA] transition-colors">
+                  <User className="w-4 h-4 text-[#11311F] group-hover:text-[#4CAF50]" />
+                </div>
+                <span className="text-[10px] font-bold text-[#11311F]">Account</span>
+              </Link>
+              <button onClick={handleLogout} className="flex flex-col items-center gap-0.5 text-red-500 hover:text-red-700 transition-colors group cursor-pointer">
+                <div className="bg-red-50 p-2 rounded-full group-hover:bg-red-100 transition-colors">
+                  <LogOut className="w-4 h-4 text-red-500 group-hover:text-red-700" />
+                </div>
+                <span className="text-[10px] font-bold text-red-600">Log Out</span>
+              </button>
+            </div>
           ) : (
             <div className="hidden sm:flex items-center gap-3">
               <Link to="/login" className="text-sm font-bold text-[#11311F] hover:text-[#4CAF50] transition-colors">
@@ -173,10 +189,17 @@ const Navbar = () => {
               <ChevronDown className="w-4 h-4 -rotate-90 text-gray-400" />
             </Link>
           ))}
-          {!currentUser && (
+          {!currentUser ? (
             <div className="p-4 grid grid-cols-2 gap-4 bg-gray-50">
               <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-center bg-white border border-gray-200 text-[#11311F] px-4 py-2.5 rounded-lg text-sm font-bold">Login</Link>
               <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="text-center bg-[#11311F] text-white px-4 py-2.5 rounded-lg text-sm font-bold">Sign Up</Link>
+            </div>
+          ) : (
+            <div className="p-4 bg-gray-50">
+              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2.5 rounded-lg text-sm font-bold cursor-pointer transition-colors border border-red-100">
+                <LogOut className="w-4 h-4" />
+                <span>Log Out</span>
+              </button>
             </div>
           )}
         </div>
