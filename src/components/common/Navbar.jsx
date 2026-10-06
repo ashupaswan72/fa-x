@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const Navbar = () => {
   const { cartItems } = useCart() || { cartItems: [] };
-  const { currentUser, LogOut, logout } = useAuth() || {};
+  const { currentUser, logout } = useAuth() || {};
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
