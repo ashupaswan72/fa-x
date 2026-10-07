@@ -342,7 +342,7 @@ const Register = () => {
 
           
           <div className="flex justify-center my-4">
-            <Turnstile siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} onSuccess={setTurnstileToken} />
+            <Turnstile siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAFQg88XLiQruTFhQ"} onSuccess={setTurnstileToken} />
           </div>
           <Button 
             type="submit" 
