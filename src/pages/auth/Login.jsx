@@ -8,7 +8,7 @@ import { showToast } from '../../components/ui/Toast';
 import { Mail, Lock, LogIn } from 'lucide-react';
 
 const Login = () => {
-  const { login, loginWithGoogle, register } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState("");
@@ -32,16 +32,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  const handleGoogleLogin = async () => {
-    try {
-      await loginWithGoogle();
-    } catch (err) {
-      console.error(err);
-      showToast("Google Login failed.", "error");
-    }
-  };
-
   return (
     <div className="max-w-md mx-auto py-12 px-4 space-y-6">
       
@@ -99,23 +89,6 @@ const Login = () => {
             <span>Sign In</span>
           </Button>
         </form>
-
-        <div className="relative flex items-center justify-center py-2">
-          <div className="border-t border-gray-100 w-full" />
-          <span className="bg-white px-3 text-[10px] text-gray-400 font-bold uppercase absolute">OR</span>
-        </div>
-
-        {/* Google sign-in */}
-        <Button 
-          type="button" 
-          variant="outline" 
-          fullWidth 
-          onClick={handleGoogleLogin}
-          className="flex items-center justify-center space-x-2 border-gray-200 text-dark font-bold hover:bg-gray-50 py-3"
-        >
-          <img src="https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=48" alt="Google" className="w-4.5 h-4.5 rounded-full object-cover" />
-          <span>Sign In with Google</span>
-        </Button>
 
         {/* Register link */}
         <p className="text-xs text-gray-500 text-center font-semibold">

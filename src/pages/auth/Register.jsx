@@ -9,7 +9,7 @@ import { showToast } from '../../components/ui/Toast';
 import { Mail, Lock, User, Phone, CheckSquare, Truck } from 'lucide-react';
 
 const Register = () => {
-  const { register, loginWithGoogle } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   // Registration form states
@@ -345,26 +345,6 @@ const Register = () => {
             <span>Create Account & Register</span>
           </Button>
         </form>
-
-        {role === 'customer' && (
-          <>
-            <div className="relative flex items-center justify-center py-2">
-              <div className="border-t border-gray-100 w-full" />
-              <span className="bg-white px-3 text-[10px] text-gray-400 font-bold uppercase absolute">OR</span>
-            </div>
-
-            <Button 
-              type="button" 
-              variant="outline" 
-              fullWidth 
-              onClick={loginWithGoogle}
-              className="flex items-center justify-center space-x-2 border-gray-200 text-dark font-bold hover:bg-gray-50 py-3"
-            >
-              <img src="https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=48" alt="Google" className="w-4.5 h-4.5 rounded-full object-cover" />
-              <span>Sign Up with Google</span>
-            </Button>
-          </>
-        )}
 
         <p className="text-xs text-gray-500 text-center font-semibold">
           Already have an account?{' '}
