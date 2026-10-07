@@ -302,7 +302,7 @@ const LandingPage = () => {
               
               <p className="text-center text-[10px] font-bold text-[#4CAF50] mb-6">🎉 ₹13/kg savings unlocked!</p>
               
-              <button className="w-full bg-[#4CAF50] hover:bg-[#3d8c40] text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg">
+              <button onClick={() => navigate('/shop')} className="w-full bg-[#4CAF50] hover:bg-[#3d8c40] text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg">
                 Join Group Now
               </button>
             </div>
@@ -356,7 +356,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 
-                <button className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
+                <button onClick={() => navigate('/shop')} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
                   Pre-Book Now
                 </button>
               </div>
@@ -389,7 +389,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 
-                <button className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
+                <button onClick={() => navigate('/shop')} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
                   Pre-Book Now
                 </button>
               </div>
