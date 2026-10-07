@@ -41,6 +41,7 @@ import AIMarketPage from './pages/AIMarketPage';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import ForgotPassword from './pages/auth/ForgotPassword';
+import UpdatePassword from './pages/auth/UpdatePassword';
 
 // Customer Dashboards
 import CustomerDashboard from './pages/customer/CustomerDashboard';
@@ -242,6 +243,8 @@ const App = () => {
               <Route path="/login" element={<PublicLayout><Login /></PublicLayout>} />
               <Route path="/register" element={<PublicLayout><Register /></PublicLayout>} />
               <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+              <Route path="/update-password" element={<PublicLayout><UpdatePassword /></PublicLayout>} />
+
 
               {/* Secure Customer Dashboard Nested Area */}
               <Route path="/customer" element={
