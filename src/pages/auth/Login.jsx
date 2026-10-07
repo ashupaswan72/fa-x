@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import logoImg from '../../assets/logo.jpg';
 import { useAuth } from '../../contexts/AuthContext';
@@ -14,12 +15,17 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const redirectPath = location.state?.from || '/';
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) return;
+    if (!turnstileToken) {
+      showToast("Please complete the captcha verification", "error");
+      return;
+    }
     setLoading(true);
     try {
       await login(email, password);
@@ -78,6 +84,10 @@ const Login = () => {
             </div>
           </div>
 
+          
+          <div className="flex justify-center my-4">
+            <Turnstile siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} onSuccess={setTurnstileToken} />
+          </div>
           <Button 
             type="submit" 
             variant="primary" 

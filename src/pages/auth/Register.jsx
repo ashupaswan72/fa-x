@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { Link, useNavigate } from 'react-router-dom';
 import logoImg from '../../assets/logo.jpg';
 import { useAuth } from '../../contexts/AuthContext';
@@ -33,6 +34,7 @@ const Register = () => {
   const [licenseDoc, setLicenseDoc] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const handleLocationSelected = (loc) => {
     setLocationCoords(loc);
@@ -41,6 +43,10 @@ const Register = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    if (!turnstileToken) {
+      showToast("Please complete the captcha verification", "error");
+      return;
+    }
     if (password !== confirmPassword) {
       showToast("Passwords do not match.", "error");
       return;
@@ -334,6 +340,10 @@ const Register = () => {
             </div>
           )}
 
+          
+          <div className="flex justify-center my-4">
+            <Turnstile siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"} onSuccess={setTurnstileToken} />
+          </div>
           <Button 
             type="submit" 
             variant="primary" 
