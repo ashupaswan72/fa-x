@@ -11,6 +11,7 @@ const ShopPage = () => {
   const { addToCart } = useCart() || { addToCart: () => {} };
   
   const [products, setProducts] = useState([]);
+  const [groupBuys, setGroupBuys] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState(searchParams.get('category') || 'all');
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
@@ -37,11 +38,14 @@ const ShopPage = () => {
     if (query) setSearchQuery(query);
   }, [searchParams]);
 
+  
   const fetchProducts = async () => {
     setLoading(true);
     try {
       const data = await dbService.getProducts();
       setProducts(data || []);
+      const gbData = await dbService.getGroupBuys();
+      setGroupBuys(gbData || []);
     } catch (err) {
       console.error(err);
       showToast("Failed to load products", "error");
@@ -153,19 +157,34 @@ const ShopPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product) => {
+                const activeGb = groupBuys.find(gb => gb.productId === product.id && gb.status === 'active');
+                const navigateUrl = activeGb ? `/product/${product.id}?groupbuy=${activeGb.id}` : `/product/${product.id}`;
+                return (
                 <div 
                   key={product.id} 
-                  onClick={() => navigate(`/product/${product.id}`)}
+                  onClick={() => navigate(navigateUrl)}
                   className="bg-white rounded-2xl p-4 border border-gray-100 hover:border-[#4CAF50]/30 hover:shadow-xl transition-all cursor-pointer group flex flex-col h-full"
                 >
                   <div className="relative h-48 rounded-xl overflow-hidden mb-4 bg-gray-50">
                     <img src={product.images[0] || 'https://via.placeholder.com/300'} alt={product.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-2 left-2 flex flex-col gap-1">
                     {product.isOrganic && (
-                      <span className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm">
+                      <span className="bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm w-max">
                         <Leaf className="w-3 h-3" /> ORGANIC
                       </span>
                     )}
+                    {product.isPreorder && (
+                      <span className="bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm w-max uppercase tracking-wider">
+                        ⏳ PRE-ORDER
+                      </span>
+                    )}
+                    {activeGb && (
+                      <span className="bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-1 shadow-sm w-max uppercase tracking-wider">
+                        🤝 GROUP BUY
+                      </span>
+                    )}
+                    </div>
                   </div>
                   
                   <div className="flex-1 flex flex-col">
@@ -174,7 +193,10 @@ const ShopPage = () => {
                       <span className="font-black text-[#11311F]">₹{product.price}</span>
                     </div>
                     
-                    <p className="text-xs text-gray-500 mb-3">{product.farmerName}</p>
+                    <p className="text-xs text-gray-500 mb-2">{product.farmerName}</p>
+                    {product.harvestDate && (
+                      <p className="text-[10px] font-bold text-emerald-600 mb-2 uppercase">Harvest: {new Date(product.harvestDate).toLocaleDateString()}</p>
+                    )}
                     
                     <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-50">
                       <span className="text-xs font-semibold text-gray-500">
@@ -189,7 +211,7 @@ const ShopPage = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </div>
