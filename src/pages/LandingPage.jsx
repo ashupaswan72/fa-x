@@ -14,6 +14,51 @@ import heroImage from '../assets/me.jpeg';
 const LandingPage = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart() || { addToCart: () => {} };
+
+  const handleJoinGroupBuy = () => {
+    const mockProduct = {
+      id: "gb-wheat-1",
+      title: "Organic MP Wheat",
+      price: 155,
+      images: ["https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=200"],
+      farmerName: "Ram Singh",
+      farmerId: "farm123",
+      isPreorder: false
+    };
+    addToCart(mockProduct, 5, 'groupbuy', 'camp-wheat-1');
+    navigate('/cart');
+  };
+
+  const handlePreBook1 = () => {
+    const mockProduct = {
+      id: "pb-mango-1",
+      title: "Fresh Alphonso Mangoes",
+      price: 145,
+      images: ["https://images.unsplash.com/photo-1553279768-865429fa0078?w=200"],
+      farmerName: "Ramesh Kumar",
+      farmerId: "farm123",
+      isPreorder: true,
+      advancePct: 25
+    };
+    addToCart(mockProduct, 10, 'preorder');
+    navigate('/cart');
+  };
+
+  const handlePreBook2 = () => {
+    const mockProduct = {
+      id: "pb-saffron-1",
+      title: "Premium Saffron Extract",
+      price: 1290,
+      images: ["https://images.unsplash.com/photo-1599940824399-b87987ceb72a?w=200"],
+      farmerName: "Priya Spices",
+      farmerId: "farm456",
+      isPreorder: true,
+      advancePct: 50
+    };
+    addToCart(mockProduct, 1, 'preorder');
+    navigate('/cart');
+  };
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -302,7 +347,7 @@ const LandingPage = () => {
               
               <p className="text-center text-[10px] font-bold text-[#4CAF50] mb-6">🎉 ₹13/kg savings unlocked!</p>
               
-              <button onClick={() => navigate('/shop')} className="w-full bg-[#4CAF50] hover:bg-[#3d8c40] text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg">
+              <button onClick={handleJoinGroupBuy} className="w-full bg-[#4CAF50] hover:bg-[#3d8c40] text-white font-bold py-3.5 rounded-xl transition-colors shadow-lg">
                 Join Group Now
               </button>
             </div>
@@ -356,7 +401,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 
-                <button onClick={() => navigate('/shop')} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
+                <button onClick={handlePreBook1} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
                   Pre-Book Now
                 </button>
               </div>
@@ -389,7 +434,7 @@ const LandingPage = () => {
                   </div>
                 </div>
                 
-                <button onClick={() => navigate('/shop')} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
+                <button onClick={handlePreBook2} className="w-full bg-[#11311F] hover:bg-[#4CAF50] text-white font-bold py-3 rounded-xl transition-colors shadow-md text-sm">
                   Pre-Book Now
                 </button>
               </div>
