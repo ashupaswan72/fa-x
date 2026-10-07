@@ -29,6 +29,8 @@ import ProfilePage from './pages/ProfilePage';
 import HowItWorksPage from './pages/HowItWorksPage';
 import FAQPage from './pages/FAQPage';
 import AboutUsPage from './pages/AboutUsPage';
+import { ContactPage, PrivacyPage, TermsPage } from './pages/legal/LegalPages';
+
 import ShopPage from './pages/ShopPage';
 import CategoriesPage from './pages/CategoriesPage';
 import FarmersPage from './pages/FarmersPage';
@@ -218,6 +220,10 @@ const App = () => {
               <Route path="/how-it-works" element={<PublicLayout><HowItWorksPage /></PublicLayout>} />
               <Route path="/faq" element={<PublicLayout><FAQPage /></PublicLayout>} />
               <Route path="/about" element={<PublicLayout><AboutUsPage /></PublicLayout>} />
+              <Route path="/contact" element={<PublicLayout><ContactPage /></PublicLayout>} />
+              <Route path="/privacy" element={<PublicLayout><PrivacyPage /></PublicLayout>} />
+              <Route path="/terms" element={<PublicLayout><TermsPage /></PublicLayout>} />
+
               
               {/* Secure Checkout Guard (Customer only) */}
               <Route path="/checkout" element={
