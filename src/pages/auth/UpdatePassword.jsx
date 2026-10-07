@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../config/supabase';
+import { supabase } from '../../services/supabase';
 import Button from '../../components/ui/Button';
 import { showToast } from '../../components/ui/Toast';
 import { Lock } from 'lucide-react';
