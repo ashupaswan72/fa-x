@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Leaf, Users, ShieldCheck, HeartHandshake } from 'lucide-react';
 import Card from '../components/ui/Card';
 import founderImg from '../assets/founder.jpeg';
-import coFounderImg from '../assets/yash.jpeg';
 
 const AboutUsPage = () => {
   return (
@@ -103,7 +102,7 @@ const AboutUsPage = () => {
           <p className="text-gray-500 font-medium max-w-2xl mx-auto">The visionaries behind FA-X who are passionate about redefining the agricultural economy.</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+        <div className="flex justify-center max-w-4xl mx-auto">
           {/* Founder */}
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-emerald-100 shadow-xl">
@@ -119,24 +118,6 @@ const AboutUsPage = () => {
             </div>
             <p className="text-gray-500 font-medium text-sm leading-relaxed max-w-xs">
               A former agriculture supply chain executive who saw the inefficiencies firsthand and decided to build a fairer ecosystem for everyone.
-            </p>
-          </div>
-
-          {/* Co-Founder */}
-          <div className="flex flex-col items-center text-center space-y-4">
-            <div className="relative w-48 h-48 rounded-full overflow-hidden border-4 border-blue-100 shadow-xl">
-              <img 
-                src={coFounderImg} 
-                alt="Co-Founder" 
-                className="w-full h-full object-cover object-top scale-125 hover:scale-150 transition-transform duration-500"
-              />
-            </div>
-            <div>
-              <h3 className="text-2xl font-black text-dark">Yash</h3>
-              <p className="text-sm font-bold text-blue-600 uppercase tracking-widest mt-1">Co-Founder & CTO</p>
-            </div>
-            <p className="text-gray-500 font-medium text-sm leading-relaxed max-w-xs">
-              A tech innovator obsessed with using software to solve real-world problems. He leads the architecture of the FA-X platform.
             </p>
           </div>
         </div>
