@@ -68,11 +68,7 @@ const Navbar = () => {
 
         {/* Location & Search (Desktop) */}
         <div className="hidden md:flex flex-1 max-w-3xl items-center gap-4 mx-8">
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-[#11311F] cursor-pointer hover:text-[#4CAF50] transition-colors shrink-0 bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
-            <MapPin className="w-4 h-4 text-[#4CAF50]" />
-            <span className="truncate max-w-[120px]">Deliver to: Delhi</span>
-            <ChevronDown className="w-3 h-3 text-gray-400" />
-          </div>
+          
 
           <form onSubmit={handleSearch} className="flex-1 flex shadow-sm border border-gray-200 rounded-lg overflow-hidden bg-gray-50 focus-within:bg-white focus-within:border-[#4CAF50] focus-within:ring-2 focus-within:ring-[#4CAF50]/20 transition-all">
             <input 
@@ -170,9 +166,7 @@ const Navbar = () => {
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-xl border-t border-gray-100 flex flex-col z-50">
-          <div className="p-4 bg-gray-50 flex items-center gap-2 text-sm font-semibold text-[#11311F]">
-            <MapPin className="w-4 h-4 text-[#4CAF50]" /> Deliver to: Delhi (Select)
-          </div>
+          
           {navLinks.map((link, idx) => (
             <Link 
               key={idx} 
