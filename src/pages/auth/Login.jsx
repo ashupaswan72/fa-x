@@ -6,7 +6,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import { showToast } from '../../components/ui/Toast';
-import { Mail, Lock, LogIn } from 'lucide-react';
+import { Mail, Lock, LogIn , CheckCircle} from 'lucide-react';
 
 const Login = () => {
   const { login, register } = useAuth();
@@ -16,6 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const redirectPath = location.state?.from || '/';
 
@@ -30,7 +31,10 @@ const Login = () => {
     try {
       await login(email, password);
       showToast("Successfully logged in! Welcome back. 🌾", "success");
-      navigate(redirectPath, { replace: true });
+      setShowSuccess(true);
+      setTimeout(() => {
+        navigate(redirectPath, { replace: true });
+      }, 3000);
     } catch (err) {
       console.error(err);
       showToast(err.message || "Failed to log in.", "error");
@@ -38,6 +42,19 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  if (showSuccess) {
+    return (
+      <div className="max-w-md mx-auto py-20 px-4 flex flex-col items-center justify-center space-y-6 text-center animate-fade-in">
+        <div className="w-24 h-24 bg-[#4CAF50] rounded-full flex items-center justify-center shadow-lg mb-4 shadow-[#4CAF50]/30 animate-bounce">
+          <CheckCircle className="w-12 h-12 text-white" />
+        </div>
+        <h1 className="text-3xl font-black text-dark">Thank You!</h1>
+        <p className="text-gray-500 font-medium">You have successfully logged in.<br/>Redirecting you shortly...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-md mx-auto py-12 px-4 space-y-6">
       
